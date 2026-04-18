@@ -14,11 +14,11 @@ export function createInitialScores(): TraitScores {
 
 export function addScores(current: TraitScores, delta: Partial<TraitScores>): TraitScores {
   return {
-    energy: clamp(current.energy + (delta.energy || 0)),
-    stimulus: clamp(current.stimulus + (delta.stimulus || 0)),
-    planning: clamp(current.planning + (delta.planning || 0)),
+    energy:      clamp(current.energy      + (delta.energy      || 0)),
+    stimulus:    clamp(current.stimulus    + (delta.stimulus    || 0)),
+    planning:    clamp(current.planning    + (delta.planning    || 0)),
     environment: clamp(current.environment + (delta.environment || 0)),
-    experience: clamp(current.experience + (delta.experience || 0)),
+    experience:  clamp(current.experience  + (delta.experience  || 0)),
   };
 }
 
@@ -29,31 +29,35 @@ function clamp(v: number): number {
 export function calculatePersonality(scores: TraitScores): TravelPersonality {
   const { energy, stimulus, planning, environment, experience } = scores;
 
-  // Healing Traveler: rest-oriented introvert seeking stability
+  // 힐링 여행자: 휴식 지향, 내향, 안정 선호
   if (experience <= 35 && stimulus <= 40 && energy <= 40) return 'healer';
 
-  // Adventure Explorer: high adventure + high activity
+  // 모험 탐험가: 모험 + 활동 모두 높음
   if (stimulus >= 65 && experience >= 60) return 'adventurer';
 
-  // Emotional Romanticist: urban-leaning, moderate stability, introverted
+  // 미식 탐험가: 도시 + 계획적 + 적당한 자극 (맛집 리서치형)
+  if (environment >= 65 && planning >= 55 && stimulus <= 62) return 'gourmet';
+
+  // 감성 로맨티스트: 도시 선호, 안정 지향, 내향적
   if (environment >= 55 && stimulus <= 50 && energy <= 55) return 'romantic';
 
-  // Free Wanderer: spontaneous + adventurous
+  // 자유로운 방랑자: 즉흥 + 모험
   if (planning <= 35 && stimulus >= 50) return 'wanderer';
 
-  // Perfect Planner: structured + stability
+  // 완벽한 계획가: 체계 + 안정
   if (planning >= 60) return 'planner';
 
-  // Fallback: pick by strongest trait deviation from center
-  const deviations: [TravelPersonality, number][] = [
-    ['healer', (100 - experience) + (100 - stimulus) + (100 - energy)],
+  // 폴백: 각 유형별 점수 합산 후 최댓값
+  const candidates: [TravelPersonality, number][] = [
+    ['healer',     (100 - experience) + (100 - stimulus) + (100 - energy)],
     ['adventurer', stimulus + experience],
-    ['romantic', environment + (100 - stimulus)],
-    ['wanderer', (100 - planning) + stimulus],
-    ['planner', planning + (100 - stimulus)],
+    ['gourmet',    environment + planning + (100 - stimulus)],
+    ['romantic',   environment + (100 - stimulus) + (100 - energy)],
+    ['wanderer',   (100 - planning) + stimulus],
+    ['planner',    planning + (100 - stimulus)],
   ];
-  deviations.sort((a, b) => b[1] - a[1]);
-  return deviations[0][0];
+  candidates.sort((a, b) => b[1] - a[1]);
+  return candidates[0][0];
 }
 
 export const personalityResults: Record<TravelPersonality, PersonalityResult> = {
@@ -74,7 +78,7 @@ export const personalityResults: Record<TravelPersonality, PersonalityResult> = 
     emoji: '🏔️',
     subtitle: '심장이 뛰는 곳으로',
     description:
-      '당신의 심장은 미지의 세계를 향해 뛰고 있어요! 익스트림한 경험이 당신을 살아있게 만듭니다. 높은 산 정상에서 세상을 내려다보거나, 급류를 타고 내려오는 그 짜릿함. 일상의 루틴에서 벗어나 한계를 시험하는 여행이 당신을 기다리고 있어요.',
+      '당신의 심장은 미지의 세계를 향해 뛰고 있어요! 익스트림한 경험이 당신을 살아있게 만듭니다. 높은 산 정상에서 세상을 내려다보거나, 급류를 타고 내려오는 짜릿함. 일상의 루틴에서 벗어나 한계를 시험하는 여행이 당신을 기다리고 있어요.',
     destinations: ['네팔', '뉴질랜드', '아이슬란드', '스위스', '코스타리카'],
     color: '#FF6B6B',
     gradient: 'from-red-400 to-orange-300',
@@ -111,5 +115,16 @@ export const personalityResults: Record<TravelPersonality, PersonalityResult> = 
     destinations: ['도쿄', '오사카', '런던', '로마', '싱가포르'],
     color: '#45B7D1',
     gradient: 'from-blue-400 to-indigo-300',
+  },
+  gourmet: {
+    type: 'gourmet',
+    name: '미식 탐험가',
+    emoji: '🍜',
+    subtitle: '먹기 위해 여행한다',
+    description:
+      '당신에게 여행의 하이라이트는 바로 음식! 현지 시장 골목의 냄새, 로컬 레스토랑의 설레는 메뉴판, 그 도시에서만 맛볼 수 있는 한 접시가 여행의 전부예요. 여행지 선정 기준 1순위도 "뭐가 맛있나?" 인 당신, 위장으로 세계를 여행하는 진정한 미식 탐험가입니다.',
+    destinations: ['오사카', '홍콩', '이스탄불', '리마', '나폴리'],
+    color: '#F4A261',
+    gradient: 'from-orange-400 to-amber-300',
   },
 };

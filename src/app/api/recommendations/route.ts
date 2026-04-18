@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { TravelPersonality, PriceRange } from '@/lib/quiz/types';
 import { getRecommendations, getSearchUrl } from '@/lib/myrealtrip/mapper';
 
-const VALID_TYPES: TravelPersonality[] = ['healer', 'adventurer', 'romantic', 'wanderer', 'planner'];
+const VALID_TYPES: TravelPersonality[] = ['healer', 'adventurer', 'romantic', 'wanderer', 'planner', 'gourmet'];
 const VALID_RANGES: PriceRange[] = ['budget', 'mid', 'luxury'];
 
 export async function GET(request: NextRequest) {

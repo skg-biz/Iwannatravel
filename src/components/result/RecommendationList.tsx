@@ -21,8 +21,12 @@ export default function RecommendationList({ type }: RecommendationListProps) {
     fetch(`/api/recommendations?type=${type}&priceRange=${priceRange}`)
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data.products);
-        setSearchUrl(data.searchUrl);
+        setProducts(data.products ?? []);
+        setSearchUrl(data.searchUrl ?? '');
+        setLoading(false);
+      })
+      .catch(() => {
+        setProducts([]);
         setLoading(false);
       });
   }, [type, priceRange]);

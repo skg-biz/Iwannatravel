@@ -49,6 +49,7 @@ export default function Home() {
           <span className="rounded-full bg-purple-100 px-3 py-1 dark:bg-purple-900/30">🌸 감성 로맨티스트</span>
           <span className="rounded-full bg-yellow-100 px-3 py-1 dark:bg-yellow-900/30">🎒 자유로운 방랑자</span>
           <span className="rounded-full bg-blue-100 px-3 py-1 dark:bg-blue-900/30">📋 완벽한 계획가</span>
+          <span className="rounded-full bg-orange-100 px-3 py-1 dark:bg-orange-900/30">🍜 미식 탐험가</span>
         </div>
       </div>
     </main>

@@ -12,14 +12,15 @@ import { TraitScores } from '@/lib/quiz/types';
 
 // Default representative scores for each type (used when directly accessing URL)
 const defaultScores: Record<TravelPersonality, TraitScores> = {
-  healer: { energy: 25, stimulus: 20, planning: 50, environment: 30, experience: 15 },
+  healer:     { energy: 25, stimulus: 20, planning: 50, environment: 30, experience: 15 },
   adventurer: { energy: 60, stimulus: 85, planning: 40, environment: 45, experience: 80 },
-  romantic: { energy: 35, stimulus: 30, planning: 55, environment: 75, experience: 35 },
-  wanderer: { energy: 55, stimulus: 65, planning: 20, environment: 45, experience: 55 },
-  planner: { energy: 50, stimulus: 35, planning: 80, environment: 60, experience: 50 },
+  romantic:   { energy: 35, stimulus: 30, planning: 55, environment: 75, experience: 35 },
+  wanderer:   { energy: 55, stimulus: 65, planning: 20, environment: 45, experience: 55 },
+  planner:    { energy: 50, stimulus: 35, planning: 80, environment: 60, experience: 50 },
+  gourmet:    { energy: 60, stimulus: 45, planning: 65, environment: 78, experience: 55 },
 };
 
-const VALID_TYPES: TravelPersonality[] = ['healer', 'adventurer', 'romantic', 'wanderer', 'planner'];
+const VALID_TYPES: TravelPersonality[] = ['healer', 'adventurer', 'romantic', 'wanderer', 'planner', 'gourmet'];
 
 export default function ResultPage() {
   const params = useParams();
