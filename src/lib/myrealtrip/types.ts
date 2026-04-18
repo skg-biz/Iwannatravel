@@ -9,6 +9,7 @@ export interface TravelProduct {
   imageEmoji: string;
   description: string;
   myrealTripUrl: string;
+  tripComUrl: string;
   rating: number;
   personalityTypes: TravelPersonality[];
   tags: string[];

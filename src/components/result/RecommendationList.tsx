@@ -43,32 +43,54 @@ export default function RecommendationList({ type }: RecommendationListProps) {
       ) : (
         <div className="space-y-3">
           {products.map((product, i) => (
-            <motion.a
+            <motion.div
               key={product.id}
-              href={product.myrealTripUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="flex items-start gap-4 rounded-2xl border border-foreground/10 bg-white/60 p-4 transition-all hover:border-purple-300 hover:shadow-md dark:bg-white/5 dark:hover:border-purple-500/50"
+              className="rounded-2xl border border-foreground/10 bg-white/60 p-4 dark:bg-white/5"
             >
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-foreground/5 text-3xl">
-                {product.imageEmoji}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold">{product.title}</div>
-                <div className="mt-1 text-sm text-foreground/50">{product.description}</div>
-                <div className="mt-2 flex items-center gap-2">
-                  <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
-                    {product.price.toLocaleString()}원
-                  </span>
-                  <span className="text-xs text-foreground/40">
-                    ⭐ {product.rating}
-                  </span>
+              {/* Product info */}
+              <div className="flex items-start gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-foreground/5 text-3xl">
+                  {product.imageEmoji}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold">{product.title}</div>
+                  <div className="mt-1 text-sm text-foreground/50">{product.description}</div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
+                      {product.price.toLocaleString()}원~
+                    </span>
+                    <span className="text-xs text-foreground/40">
+                      ⭐ {product.rating}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </motion.a>
+
+              {/* Booking buttons */}
+              <div className="mt-3 flex gap-2">
+                <a
+                  href={product.tripComUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-blue-500 px-3 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-600 active:scale-95"
+                >
+                  <span>🛫</span>
+                  <span>Trip.com 예약</span>
+                </a>
+                <a
+                  href={product.myrealTripUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-purple-400 px-3 py-2.5 text-sm font-semibold text-purple-600 transition-all hover:bg-purple-50 active:scale-95 dark:text-purple-400 dark:hover:bg-purple-900/20"
+                >
+                  <span>🗺️</span>
+                  <span>마이리얼트립</span>
+                </a>
+              </div>
+            </motion.div>
           ))}
 
           {searchUrl && (
