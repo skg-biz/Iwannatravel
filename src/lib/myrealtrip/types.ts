@@ -10,6 +10,7 @@ export interface TravelProduct {
   description: string;
   myrealTripUrl: string;
   tripComUrl: string;
+  nights: number;
   rating: number;
   personalityTypes: TravelPersonality[];
   tags: string[];

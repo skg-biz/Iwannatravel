@@ -1,10 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { TravelPersonality, PriceRange } from '@/lib/quiz/types';
 import { TravelProduct } from '@/lib/myrealtrip/types';
 import PriceRangeSelector from '@/components/ui/PriceRangeSelector';
+
+/** 오늘로부터 1달 뒤 날짜를 YYYY-MM-DD 형식으로 반환 */
+function getDepDate(): string {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  return d.toISOString().split('T')[0];
+}
+
+/** 베이스 URL에 날짜·인원·박수 파라미터를 추가 */
+function buildTripUrl(baseUrl: string, nights: number): string {
+  const depDate = getDepDate();
+  return `${baseUrl}&depDate=${depDate}&night=${nights}&adult=1&child=0`;
+}
 
 interface RecommendationListProps {
   type: TravelPersonality;
@@ -13,6 +26,7 @@ interface RecommendationListProps {
 export default function RecommendationList({ type }: RecommendationListProps) {
   const [priceRange, setPriceRange] = useState<PriceRange>('mid');
   const [products, setProducts] = useState<TravelProduct[]>([]);
+  const depDate = useMemo(() => getDepDate(), []);
   const [searchUrl, setSearchUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -69,25 +83,16 @@ export default function RecommendationList({ type }: RecommendationListProps) {
                 </div>
               </div>
 
-              {/* Booking buttons */}
-              <div className="mt-3 flex gap-2">
+              {/* Booking button */}
+              <div className="mt-3">
                 <a
-                  href={product.tripComUrl}
+                  href={buildTripUrl(product.tripComUrl, product.nights)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-blue-500 px-3 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-600 active:scale-95"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-purple-500 to-teal-500 px-3 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
                 >
-                  <span>🛫</span>
-                  <span>Trip.com 예약</span>
-                </a>
-                <a
-                  href={product.myrealTripUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-purple-400 px-3 py-2.5 text-sm font-semibold text-purple-600 transition-all hover:bg-purple-50 active:scale-95 dark:text-purple-400 dark:hover:bg-purple-900/20"
-                >
-                  <span>🗺️</span>
-                  <span>마이리얼트립</span>
+                  <span>✈️</span>
+                  <span>지금 예약하기</span>
                 </a>
               </div>
             </motion.div>
