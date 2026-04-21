@@ -12,7 +12,7 @@ export default function ShareButtons({ type }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const result = personalityResults[type];
 
-  const shareText = `나의 여행 유형은 "${result.emoji} ${result.name}"!\n지금 당신의 여행 유형도 알아보세요 👇`;
+  const shareText = `아 여행가고싶다 - 나의 여행 유형은 "${result.emoji} ${result.name}"!\n지금 당신의 여행 유형도 알아보세요 👇`;
 
   const getUrl = () => (typeof window !== 'undefined' ? window.location.href : '');
 
@@ -27,7 +27,6 @@ export default function ShareButtons({ type }: ShareButtonsProps) {
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
-          title: `${result.emoji} ${result.name} — 아 여행가고싶다`,
           text: shareText,
           url,
         });
