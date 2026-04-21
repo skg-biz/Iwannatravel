@@ -1,22 +1,27 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TravelPersonality, PriceRange } from '@/lib/quiz/types';
 import { TravelProduct } from '@/lib/myrealtrip/types';
 import PriceRangeSelector from '@/components/ui/PriceRangeSelector';
 
-/** 오늘로부터 1달 뒤 날짜를 YYYY-MM-DD 형식으로 반환 */
-function getDepDate(): string {
+/** 오늘로부터 1달 뒤 날짜 → YYYY-MM-DD */
+function addMonths(months: number): Date {
   const d = new Date();
-  d.setMonth(d.getMonth() + 1);
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
+function toDateStr(d: Date): string {
   return d.toISOString().split('T')[0];
 }
 
-/** 베이스 URL에 날짜·인원·박수 파라미터를 추가 */
+/** 베이스 URL에 dDate(출발) + rDate(귀국) 동적 추가 */
 function buildTripUrl(baseUrl: string, nights: number): string {
-  const depDate = getDepDate();
-  return `${baseUrl}&depDate=${depDate}&night=${nights}&adult=1&child=0`;
+  const dep = addMonths(1);
+  const ret = new Date(dep);
+  ret.setDate(ret.getDate() + nights);
+  return `${baseUrl}&dDate=${toDateStr(dep)}&rDate=${toDateStr(ret)}`;
 }
 
 interface RecommendationListProps {
@@ -26,7 +31,6 @@ interface RecommendationListProps {
 export default function RecommendationList({ type }: RecommendationListProps) {
   const [priceRange, setPriceRange] = useState<PriceRange>('mid');
   const [products, setProducts] = useState<TravelProduct[]>([]);
-  const depDate = useMemo(() => getDepDate(), []);
   const [searchUrl, setSearchUrl] = useState('');
   const [loading, setLoading] = useState(true);
 

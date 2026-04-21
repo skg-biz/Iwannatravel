@@ -1,23 +1,27 @@
 import { TravelProduct } from './types';
 
 // 모든 가격은 인천 출발 기준 항공 왕복 + 숙박 패키지 가격 기준
-// budget  : ~100만원   (근거리 아시아 3~4박, 이코노미 + 중급 호텔)
-// mid     : 100~250만원 (중거리 아시아 4~6박 or 유럽 단거리, 이코노미 + 준특급)
-// luxury  : 250만원~   (장거리 or 고급 리조트, 비즈니스 or 5성급)
-//
-// Trip.com 제휴 베이스 URL:
-// https://www.trip.com/packages/list/seoul-to-{slug}/
-//   ?AllianceId=8110614&SID=307168163&trip_sub1={id}&trip_sub3=D15747636
-// 날짜·인원 파라미터는 RecommendationList에서 동적으로 추가됨
+// Trip.com URL 형식 (날짜는 RecommendationList에서 동적으로 추가):
+// /packages/list?aCityCode={IATA}&dCityCode=SEL&tripWay=round-trip&classType=ys
+//   &room=1&adult=1&child=0&infants=0
+//   &destinationName={EN_NAME}&isOversea=true
+//   &locale=ko-KR&curr=KRW
+//   &AllianceId=8110614&SID=307168163&trip_sub1={id}&trip_sub3=D15747636
+// dDate / rDate 는 buildTripUrl() 에서 +1달 기준으로 동적 생성
 
+const BASE = 'https://www.trip.com/packages/list';
 const ALLIANCE_ID = '8110614';
 const SID = '307168163';
 const SUB3 = 'D15747636';
 
-function tripUrl(slug: string, id: string): string {
+function tripUrl(aCityCode: string, destinationName: string, id: string): string {
   return (
-    `https://www.trip.com/packages/list/seoul-to-${slug}/` +
-    `?AllianceId=${ALLIANCE_ID}&SID=${SID}&trip_sub1=${id}&trip_sub3=${SUB3}`
+    `${BASE}?adult=1&child=0&infants=0` +
+    `&aCityCode=${aCityCode}&dCityCode=SEL` +
+    `&tripWay=round-trip&classType=ys&room=1` +
+    `&destinationName=${encodeURIComponent(destinationName)}` +
+    `&isOversea=true&locale=ko-KR&curr=KRW` +
+    `&AllianceId=${ALLIANCE_ID}&SID=${SID}&trip_sub1=${id}&trip_sub3=${SUB3}`
   );
 }
 
@@ -35,7 +39,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🏖️',
     description: '인천↔다낭 왕복 항공 + 미케비치 3성 리조트 3박, 스파 1회 포함',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=다낭+리조트+패키지',
-    tripComUrl: tripUrl('danang', 'h1'),
+    tripComUrl: tripUrl('DAD', 'Danang', 'h1'),
     nights: 3,
     rating: 4.6,
     personalityTypes: ['healer'],
@@ -50,7 +54,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🌺',
     description: '인천↔오키나와 왕복 항공 + 에메랄드 해변 비치 호텔 3박',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=오키나와+힐링+패키지',
-    tripComUrl: tripUrl('okinawa', 'h2'),
+    tripComUrl: tripUrl('OKA', 'Okinawa', 'h2'),
     nights: 3,
     rating: 4.5,
     personalityTypes: ['healer'],
@@ -65,7 +69,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🌴',
     description: '인천↔발리 왕복 항공 + 우붓 정글 뷰 풀빌라 4박 + 바디 스파 2회',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=발리+풀빌라+스파+패키지',
-    tripComUrl: tripUrl('bali', 'h3'),
+    tripComUrl: tripUrl('DPS', 'Bali', 'h3'),
     nights: 4,
     rating: 4.8,
     personalityTypes: ['healer'],
@@ -80,7 +84,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🤍',
     description: '인천↔보라카이 왕복 항공 + 화이트비치 4성 리조트 4박',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=보라카이+리조트+패키지',
-    tripComUrl: tripUrl('boracay', 'h4'),
+    tripComUrl: tripUrl('MPH', 'Boracay', 'h4'),
     nights: 4,
     rating: 4.7,
     personalityTypes: ['healer'],
@@ -95,7 +99,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🐠',
     description: '인천↔몰디브 왕복 항공(경유) + 오버워터 빌라 5박 + 식사·스노클링 포함',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=몰디브+오버워터+빌라+패키지',
-    tripComUrl: tripUrl('maldives', 'h5'),
+    tripComUrl: tripUrl('MLE', 'Maldives', 'h5'),
     nights: 5,
     rating: 4.9,
     personalityTypes: ['healer'],
@@ -110,7 +114,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🌺',
     description: '인천↔호놀룰루 왕복 항공 + 마우이 5성급 리조트 5박 + 조식 포함',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=하와이+마우이+5성+패키지',
-    tripComUrl: tripUrl('hawaii', 'h6'),
+    tripComUrl: tripUrl('HNL', 'Hawaii', 'h6'),
     nights: 5,
     rating: 4.8,
     personalityTypes: ['healer'],
@@ -129,7 +133,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🤿',
     description: '인천↔세부 왕복 항공 + 3성 리조트 3박 + 아일랜드호핑·고래상어 투어',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=세부+다이빙+패키지',
-    tripComUrl: tripUrl('cebu', 'a1'),
+    tripComUrl: tripUrl('CEB', 'Cebu', 'a1'),
     nights: 3,
     rating: 4.7,
     personalityTypes: ['adventurer'],
@@ -144,7 +148,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🐘',
     description: '인천↔치앙마이 왕복 항공 + 3성 호텔 3박 + 정글 트레킹·코끼리 체험',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=치앙마이+트레킹+패키지',
-    tripComUrl: tripUrl('chiang-mai', 'a2'),
+    tripComUrl: tripUrl('CNX', 'Chiang Mai', 'a2'),
     nights: 3,
     rating: 4.6,
     personalityTypes: ['adventurer'],
@@ -159,7 +163,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🪂',
     description: '인천↔퀸즈타운 왕복 항공 + 중급 호텔 5박 + 번지점프·스카이다이빙 1회',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=뉴질랜드+퀸즈타운+어드벤처',
-    tripComUrl: tripUrl('queenstown', 'a3'),
+    tripComUrl: tripUrl('ZQN', 'Queenstown', 'a3'),
     nights: 5,
     rating: 4.9,
     personalityTypes: ['adventurer'],
@@ -174,7 +178,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🌋',
     description: '인천↔레이캬비크 왕복 항공(경유) + 링로드 5박 + 오로라 투어 포함',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=아이슬란드+링로드+오로라',
-    tripComUrl: tripUrl('reykjavik', 'a4'),
+    tripComUrl: tripUrl('KEF', 'Reykjavik', 'a4'),
     nights: 5,
     rating: 4.8,
     personalityTypes: ['adventurer'],
@@ -189,7 +193,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🏔️',
     description: '인천↔카트만두 왕복 항공 + EBC 트레킹 10박 (가이드·포터·숙식 포함)',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=네팔+에베레스트+베이스캠프+트레킹',
-    tripComUrl: tripUrl('kathmandu', 'a5'),
+    tripComUrl: tripUrl('KTM', 'Kathmandu', 'a5'),
     nights: 10,
     rating: 4.9,
     personalityTypes: ['adventurer'],
@@ -202,9 +206,9 @@ export const products: TravelProduct[] = [
     price: 5500000,
     priceRange: 'luxury',
     imageEmoji: '🦅',
-    description: '인천↔푼타아레나스 왕복 항공 + 파타고니아 트레킹 전용 숙소 11박 올인클루시브',
+    description: '인천↔부에노스아이레스 왕복 항공 + 파타고니아 트레킹 전용 숙소 11박 올인클루시브',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=파타고니아+트레킹+패키지',
-    tripComUrl: tripUrl('punta-arenas', 'a6'),
+    tripComUrl: tripUrl('EZE', 'Buenos Aires', 'a6'),
     nights: 11,
     rating: 4.8,
     personalityTypes: ['adventurer'],
@@ -223,7 +227,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '⛩️',
     description: '인천↔오사카 왕복 항공 + 교토 감성 료칸 2박 + 오사카 호텔 1박',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=교토+오사카+감성+패키지',
-    tripComUrl: tripUrl('osaka', 'r1'),
+    tripComUrl: tripUrl('KIX', 'Osaka', 'r1'),
     nights: 3,
     rating: 4.7,
     personalityTypes: ['romantic'],
@@ -238,7 +242,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🌃',
     description: '인천↔후쿠오카 왕복 항공 + 야타이 거리 인근 호텔 2박 + 유후인 온천 당일치기',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=후쿠오카+야경+온천+패키지',
-    tripComUrl: tripUrl('fukuoka', 'r2'),
+    tripComUrl: tripUrl('FUK', 'Fukuoka', 'r2'),
     nights: 2,
     rating: 4.5,
     personalityTypes: ['romantic'],
@@ -253,7 +257,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🏰',
     description: '인천↔프라하 왕복 항공 + 프라하 3박·비엔나 2박 감성 부티크 호텔',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=프라하+비엔나+감성+패키지',
-    tripComUrl: tripUrl('prague', 'r3'),
+    tripComUrl: tripUrl('PRG', 'Prague', 'r3'),
     nights: 5,
     rating: 4.8,
     personalityTypes: ['romantic'],
@@ -268,7 +272,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🍷',
     description: '인천↔리스본 왕복 항공 + 리스본 3박·포르투 2박 + 와이너리 투어',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=포르투갈+리스본+포르투+패키지',
-    tripComUrl: tripUrl('lisbon', 'r4'),
+    tripComUrl: tripUrl('LIS', 'Lisbon', 'r4'),
     nights: 5,
     rating: 4.7,
     personalityTypes: ['romantic'],
@@ -283,7 +287,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🗼',
     description: '인천↔파리 왕복 항공(직항) + 파리 5성 호텔 5박 + 에펠탑 디너·루브르 야간 투어',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=파리+5성+럭셔리+패키지',
-    tripComUrl: tripUrl('paris', 'r5'),
+    tripComUrl: tripUrl('CDG', 'Paris', 'r5'),
     nights: 6,
     rating: 4.9,
     personalityTypes: ['romantic'],
@@ -298,7 +302,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🌅',
     description: '인천↔아테네 왕복 항공 + 산토리니 이아 선셋뷰 빌라 4박·미코노스 3박',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=산토리니+미코노스+럭셔리+패키지',
-    tripComUrl: tripUrl('athens', 'r6'),
+    tripComUrl: tripUrl('ATH', 'Athens', 'r6'),
     nights: 7,
     rating: 4.9,
     personalityTypes: ['romantic'],
@@ -317,7 +321,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🛺',
     description: '인천↔방콕 왕복 항공 + 카오산로드 게스트하우스 2박·파타야 2박',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=방콕+파타야+자유여행+패키지',
-    tripComUrl: tripUrl('bangkok', 'w1'),
+    tripComUrl: tripUrl('BKK', 'Bangkok', 'w1'),
     nights: 4,
     rating: 4.5,
     personalityTypes: ['wanderer'],
@@ -332,7 +336,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🏍️',
     description: '인천↔하노이 왕복 항공 + 올드쿼터 호텔 2박 + 하롱베이 크루즈 1박',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=하노이+하롱베이+자유여행+패키지',
-    tripComUrl: tripUrl('hanoi', 'w2'),
+    tripComUrl: tripUrl('HAN', 'Hanoi', 'w2'),
     nights: 3,
     rating: 4.6,
     personalityTypes: ['wanderer'],
@@ -347,7 +351,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🎭',
     description: '인천↔바르셀로나 왕복 항공 + 바르셀로나 3박·마드리드 3박 중급 호텔',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=바르셀로나+마드리드+자유여행',
-    tripComUrl: tripUrl('barcelona', 'w3'),
+    tripComUrl: tripUrl('BCN', 'Barcelona', 'w3'),
     nights: 6,
     rating: 4.7,
     personalityTypes: ['wanderer'],
@@ -362,7 +366,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🚃',
     description: '인천↔리스본 왕복 항공 + 리스본 3박·세비야 2박 부티크 호스텔·호텔',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=리스본+세비야+자유여행+패키지',
-    tripComUrl: tripUrl('lisbon', 'w4'),
+    tripComUrl: tripUrl('LIS', 'Lisbon', 'w4'),
     nights: 5,
     rating: 4.6,
     personalityTypes: ['wanderer'],
@@ -377,7 +381,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🐪',
     description: '인천↔마라케시 왕복 항공(경유) + 마라케시 리야드 5박 + 사하라 럭셔리 글램핑 2박',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=모로코+사하라+글램핑+패키지',
-    tripComUrl: tripUrl('marrakech', 'w5'),
+    tripComUrl: tripUrl('RAK', 'Marrakech', 'w5'),
     nights: 8,
     rating: 4.8,
     personalityTypes: ['wanderer'],
@@ -392,7 +396,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🌎',
     description: '인천↔리마 왕복 항공 + 마추픽추·우유니 소금사막 등 10박 올인클루시브',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=페루+볼리비아+마추픽추+패키지',
-    tripComUrl: tripUrl('lima', 'w6'),
+    tripComUrl: tripUrl('LIM', 'Lima', 'w6'),
     nights: 10,
     rating: 4.8,
     personalityTypes: ['wanderer'],
@@ -411,7 +415,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🗼',
     description: '인천↔도쿄 왕복 항공 + 신주쿠 3성 호텔 3박 + 주요 명소 가이드투어 1일',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=도쿄+가이드투어+패키지',
-    tripComUrl: tripUrl('tokyo', 'p1'),
+    tripComUrl: tripUrl('TYO', 'Tokyo', 'p1'),
     nights: 3,
     rating: 4.6,
     personalityTypes: ['planner'],
@@ -426,7 +430,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🦁',
     description: '인천↔싱가포르 왕복 항공 + 4성 호텔 3박 + 유니버셜·마리나베이샌즈 입장권',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=싱가포르+올인원+패키지',
-    tripComUrl: tripUrl('singapore', 'p2'),
+    tripComUrl: tripUrl('SIN', 'Singapore', 'p2'),
     nights: 3,
     rating: 4.7,
     personalityTypes: ['planner'],
@@ -441,7 +445,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🚅',
     description: '인천↔오사카 왕복 항공 + JR패스 7일권 + 준특급 호텔 5박 (교토·나라·고베 포함)',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=일본+간사이+JR패스+패키지',
-    tripComUrl: tripUrl('osaka', 'p3'),
+    tripComUrl: tripUrl('KIX', 'Osaka', 'p3'),
     nights: 5,
     rating: 4.8,
     personalityTypes: ['planner'],
@@ -456,7 +460,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🎡',
     description: '인천↔런던 왕복 항공 + 런던 3박·유로스타·파리 3박 4성 호텔',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=런던+파리+유럽+패키지',
-    tripComUrl: tripUrl('london', 'p4'),
+    tripComUrl: tripUrl('LHR', 'London', 'p4'),
     nights: 6,
     rating: 4.7,
     personalityTypes: ['planner'],
@@ -471,7 +475,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🗺️',
     description: '인천↔로마 왕복 항공(직항) + 이탈리아·스위스·프랑스·스페인 5성급 호텔 12박',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=유럽+4개국+프리미엄+투어',
-    tripComUrl: tripUrl('rome', 'p5'),
+    tripComUrl: tripUrl('FCO', 'Rome', 'p5'),
     nights: 12,
     rating: 4.9,
     personalityTypes: ['planner'],
@@ -486,7 +490,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🚢',
     description: '인천↔바르셀로나 왕복 항공 + MSC 크루즈 7박 (로마·나폴리·마르세유 기항)',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=지중해+크루즈+패키지',
-    tripComUrl: tripUrl('barcelona', 'p6'),
+    tripComUrl: tripUrl('BCN', 'Barcelona', 'p6'),
     nights: 7,
     rating: 4.8,
     personalityTypes: ['planner'],
@@ -505,7 +509,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🍣',
     description: '인천↔오사카 왕복 항공 + 도톤보리 근처 호텔 3박 + 쿠킹클래스 1회',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=오사카+미식+쿠킹클래스+패키지',
-    tripComUrl: tripUrl('osaka', 'g1'),
+    tripComUrl: tripUrl('KIX', 'Osaka', 'g1'),
     nights: 3,
     rating: 4.7,
     personalityTypes: ['gourmet'],
@@ -520,7 +524,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🥟',
     description: '인천↔홍콩 왕복 항공 + 침사추이 4성 호텔 2박 + 딤섬 투어·야경 크루즈',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=홍콩+딤섬+미식+투어+패키지',
-    tripComUrl: tripUrl('hong-kong', 'g2'),
+    tripComUrl: tripUrl('HKG', 'Hong Kong', 'g2'),
     nights: 2,
     rating: 4.6,
     personalityTypes: ['gourmet'],
@@ -535,7 +539,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🥙',
     description: '인천↔이스탄불 왕복 항공 + 올드시티 4성 호텔 4박 + 바자르 미식 투어·쿠킹클래스',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=이스탄불+미식+쿠킹클래스+패키지',
-    tripComUrl: tripUrl('istanbul', 'g3'),
+    tripComUrl: tripUrl('IST', 'Istanbul', 'g3'),
     nights: 4,
     rating: 4.7,
     personalityTypes: ['gourmet'],
@@ -550,7 +554,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🍜',
     description: '인천↔방콕 왕복 항공 + 씰롬 4성 호텔 5박 + 야시장 미식 투어·타이쿠킹 클래스',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=방콕+미식+쿠킹클래스+패키지',
-    tripComUrl: tripUrl('bangkok', 'g4'),
+    tripComUrl: tripUrl('BKK', 'Bangkok', 'g4'),
     nights: 5,
     rating: 4.6,
     personalityTypes: ['gourmet'],
@@ -565,7 +569,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🍕',
     description: '인천↔로마 왕복 항공(직항) + 나폴리 3박·로마 4박 5성 호텔 + 피자·파스타 쿠킹 마스터클래스',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=이탈리아+나폴리+미식+패키지',
-    tripComUrl: tripUrl('rome', 'g5'),
+    tripComUrl: tripUrl('FCO', 'Rome', 'g5'),
     nights: 7,
     rating: 4.9,
     personalityTypes: ['gourmet'],
@@ -580,7 +584,7 @@ export const products: TravelProduct[] = [
     imageEmoji: '🦙',
     description: '인천↔리마 왕복 항공 + 세계 50대 레스토랑 디너 + 마추픽추 트레킹·리마 5성 호텔',
     myrealTripUrl: 'https://www.myrealtrip.com/search?q=페루+리마+미식+마추픽추+패키지',
-    tripComUrl: tripUrl('lima', 'g6'),
+    tripComUrl: tripUrl('LIM', 'Lima', 'g6'),
     nights: 8,
     rating: 4.8,
     personalityTypes: ['gourmet'],
