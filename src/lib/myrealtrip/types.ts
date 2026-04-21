@@ -8,7 +8,6 @@ export interface TravelProduct {
   priceRange: PriceRange;
   imageEmoji: string;
   description: string;
-  myrealTripUrl: string;
   tripComUrl: string;
   nights: number;
   rating: number;

@@ -31,7 +31,6 @@ interface RecommendationListProps {
 export default function RecommendationList({ type }: RecommendationListProps) {
   const [priceRange, setPriceRange] = useState<PriceRange>('mid');
   const [products, setProducts] = useState<TravelProduct[]>([]);
-  const [searchUrl, setSearchUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,7 +39,6 @@ export default function RecommendationList({ type }: RecommendationListProps) {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products ?? []);
-        setSearchUrl(data.searchUrl ?? '');
         setLoading(false);
       })
       .catch(() => {
@@ -101,17 +99,6 @@ export default function RecommendationList({ type }: RecommendationListProps) {
               </div>
             </motion.div>
           ))}
-
-          {searchUrl && (
-            <a
-              href={searchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-2xl border-2 border-dashed border-foreground/10 p-4 text-center text-sm font-medium text-foreground/50 transition-colors hover:border-purple-300 hover:text-purple-500"
-            >
-              마이리얼트립에서 더 많은 상품 보기 →
-            </a>
-          )}
         </div>
       )}
     </div>
